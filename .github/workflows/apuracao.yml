@@ -1,0 +1,31 @@
+name: Bot de Apuracao
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' # Roda a cada 10 minutos
+  workflow_dispatch: 
+
+jobs:
+  apuracao:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Dependencias
+        run: npm install
+        working-directory: ./apuracao
+
+      - name: Executar Script de Apuracao
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node apuracao.mjs
+        working-directory: ./apuracao
+
+# Ativando cron automatico
